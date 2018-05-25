@@ -1,3 +1,1 @@
-# lovejs-framework
-
-LoveJs Framework (coming soon...)
+# Love Js - Framework
