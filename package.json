@@ -17,7 +17,7 @@
     "dependencies": {
         "@lovejs/components": "https://github.com/lovejs/lovejs-components",
         "bluebird": "^3.5.1",
-        "caporal": "^0.9.0",
+        "caporal": "^0.10.0",
         "lodash": "^4.17.4",
         "node-emoji": "^1.8.1",
         "node-notifier": "^5.1.2",
@@ -25,6 +25,6 @@
         "sane": "^2.2.0",
         "semver": "^5.4.1",
         "winston": "^3.0.0-rc1",
-        "winston-transport": "^3.0.1"
+        "winston-transport": "^4.0.0"
     }
 }
