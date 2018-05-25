@@ -1,0 +1,30 @@
+{
+    "name": "@lovejs/framework",
+    "version": "0.0.1",
+    "description": "LoveJs Framework",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@lovejs/components": "0.0.1",
+        "bluebird": "^3.5.1",
+        "body-parser": "^1.18.2",
+        "caporal": "^0.9.0",
+        "commander": "^2.11.0",
+        "lodash": "^4.17.4",
+        "node-emoji": "^1.8.1",
+        "node-notifier": "^5.1.2",
+        "nsfw": "^1.0.16",
+        "pretty-exceptions": "^1.4.0",
+        "sane": "^2.2.0",
+        "semver": "^5.4.1",
+        "serve-static": "^1.13.2",
+        "watchr": "^3.0.1",
+        "winston": "^3.0.0-rc1",
+        "winston-transport": "^3.0.1",
+        "ws": "^5.1.1"
+    }
+}
