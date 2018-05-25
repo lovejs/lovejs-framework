@@ -1,13 +1,19 @@
 {
     "name": "@lovejs/framework",
+    "author": "Vincent <vincent@fullstack.pro>",
     "version": "0.0.1",
-    "description": "LoveJs Framework",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+    "description": "Lovejs framework",
+    "main": "src/index.js",
+    "keywords": ["lovejs", "framework", "lovejs plugin"],
+    "license": "MIT",
+    "homepage": "http://lovejs.io/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lovejs/lovejs-framework.git"
     },
-    "author": "",
-    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lovejs/lovejs-framework/issues"
+    },
     "dependencies": {
         "@lovejs/components": "0.0.1",
         "bluebird": "^3.5.1",
