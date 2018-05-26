@@ -12,7 +12,7 @@ const {
     errors: { PluginError }
 } = require("../Errors");
 
-const { EnvConfigExtension, KernelConfigLoader, PluginConfigLoader } = require("../config");
+const { EnvConfigExtension, KernelConfigLoader, PluginConfigLoader } = require("../Config");
 const {
     emitter: { Emitter, Listener },
     di: { Container, DefinitionsConfigLoader },
