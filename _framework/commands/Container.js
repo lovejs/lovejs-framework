@@ -22,12 +22,19 @@ class DebugContainerCommand extends Command {
 
     register(program) {
         program
-            .command("debug:container")
+            .command("container:services:list")
             .description("Return list of services from the container")
-            .action(this.execute.bind(this));
+            .action(this.executeServicesList.bind(this));
+
+        program
+            .command("container:service:execute")
+            .description("Execute a service form the container")
+            .argument("<service>", "Service to call")
+            .argument("[method]", "Service method to call")
+            .action(this.executeServiceExecute.bind(this));
     }
 
-    execute() {
+    async executeServicesList() {
         let services = this.container.getServices();
         services = _(services)
             .toPairs()
@@ -66,6 +73,12 @@ class DebugContainerCommand extends Command {
         });
 
         this.output(this.table(rows));
+    }
+
+    async executeServiceExecute({ service, method }) {
+        const instance = await this.container.get(service);
+        const res = method ? await instance[method].apply(instance) : instance();
+        this.output(res);
     }
 }
 

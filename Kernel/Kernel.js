@@ -3,9 +3,13 @@ const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
 const fileExists = promisify(fs.exists);
-
-const semver = require("semver");
 const winston = require("winston");
+const minimist = require("minimist");
+
+/* Dot env related modules */
+const dotenvExtended = require("dotenv-extended");
+const dotenvExpand = require("dotenv-expand");
+const dotenvParseVariables = require("dotenv-parse-variables");
 
 const {
     ErrorRenderer,
@@ -27,13 +31,12 @@ winston.transports["Notifier"] = require("../Logger/transports/NotifyTransport")
  * Base Kernel class
  */
 class Kernel {
-    constructor(projectDir, pluginsNames = []) {
+    constructor(projectDir) {
         if (!projectDir) {
             throw new Error(`Kernel must be instanciated with the plugin directory`);
         }
 
         this.projectDir = projectDir;
-        this.pluginsNames = pluginsNames;
         this.plugins = [];
         this.currentPluginPath = false;
         this.booted = false;
@@ -117,7 +120,8 @@ class Kernel {
      */
     getLoaderOptions(withPluginContext = false) {
         const pluginPathResolver = () => this.currentPluginPath || false;
-        const ext = new EnvConfigExtension(this.getEnv(), withPluginContext ? pluginPathResolver : false);
+        const ext = new EnvConfigExtension(this.getEnv.bind(this), withPluginContext ? pluginPathResolver : false);
+
         return {
             extensions: [ext]
         };
@@ -127,8 +131,9 @@ class Kernel {
      * Register the plugins
      */
     async registerPlugins() {
-        for (let pluginName of this.pluginsNames) {
-            await this.registerPlugin(pluginName);
+        const pluginsNames = this.getPluginsNames();
+        for (let pluginName of pluginsNames) {
+            await this.registerPlugin(pluginName, pluginsNames);
         }
     }
 
@@ -224,10 +229,29 @@ class Kernel {
     }
 
     /**
-     * Load the environment configuration from process.env
+     * Load the environment configuration from process.env & process.args
      */
     loadEnv() {
-        this.env = { ...process.env, project_dir: this.getProjectDir() };
+        let env = dotenvExtended.load({
+            silent: false,
+            path: path.join(this.getProjectDir(), ".env"),
+            defaults: path.join(this.getProjectDir(), ".env.defaults")
+        });
+
+        const options = minimist(process.argv);
+        for (let option in options) {
+            if (option[0] === "-") {
+                let value = options[option];
+                option = option.slice(1);
+                if (option in env) {
+                    env[option] = value.toString();
+                }
+            }
+        }
+        env = dotenvParseVariables(env);
+        env = dotenvExpand(env);
+
+        this.env = { ...env, project_dir: this.getProjectDir() };
     }
 
     /**
@@ -236,7 +260,14 @@ class Kernel {
      * @return {mixed}
      */
     getEnv(key = null) {
-        return key ? _.get(this.env, key) : this.env;
+        if (key) {
+            if (!_.has(this.env, key)) {
+                throw new Error(`The environment variable ${key} was not found in environment`);
+            }
+            return _.get(this.env, key);
+        } else {
+            return this.env;
+        }
     }
 
     /**
@@ -258,10 +289,11 @@ class Kernel {
 
     /**
      * Get the plugins names
+     *
      * @return {string[]}
      */
     getPluginsNames() {
-        return this.pluginsNames;
+        return [];
     }
 
     /**
@@ -275,7 +307,7 @@ class Kernel {
      * Register a plugin
      * @param {string} plugin
      */
-    async registerPlugin(plugin) {
+    async registerPlugin(plugin, pluginsNames) {
         if (this.booted) {
             throw new PluginError(plugin, `Cannot add a plugin on an already booted Kernel`);
         }
@@ -321,7 +353,7 @@ class Kernel {
             path: pluginPath,
             plugin: new pluginClass(pluginPath, pluginConfiguration, {
                 project_dir: this.getProjectDir(),
-                plugins: this.getPluginsNames()
+                plugins: pluginsNames
             })
         });
     }
@@ -391,7 +423,7 @@ class Kernel {
         await this.registerPluginsServices();
         await this.registerApplicationServices();
 
-        for (let p of this.plugins) {
+        for (let p of this.getPlugins()) {
             const { path, plugin } = p;
             this.currentPluginPath = path;
             if (plugin.beforeContainerCompilation && _.isFunction(plugin.beforeContainerCompilation)) {
@@ -401,7 +433,7 @@ class Kernel {
 
         await this.container.compile();
 
-        for (let p of this.plugins) {
+        for (let p of this.getPlugins()) {
             const { path, plugin } = p;
             this.currentPluginPath = path;
             if (plugin.afterContainerCompilation && _.isFunction(plugin.afterContainerCompilation)) {
@@ -425,7 +457,7 @@ class Kernel {
      * Register the plugins services into the container
      */
     async registerPluginsServices() {
-        for (let p of this.plugins) {
+        for (let p of this.getPlugins()) {
             const { name, plugin, path } = p;
             this.currentPluginPath = path;
             if (plugin.registerServices) {
@@ -455,7 +487,7 @@ class Kernel {
      * Boot the plugins
      */
     async bootPlugins() {
-        for (let p of this.plugins) {
+        for (let p of this.getPlugins()) {
             const { plugin } = p;
             await plugin.boot(this.container, this.logger, this.isCli);
         }

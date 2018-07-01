@@ -4,7 +4,11 @@
     "version": "0.0.1",
     "description": "Lovejs framework",
     "main": "src/index.js",
-    "keywords": ["lovejs", "framework", "lovejs plugin"],
+    "keywords": [
+        "lovejs",
+        "framework",
+        "lovejs plugin"
+    ],
     "license": "MIT",
     "homepage": "http://lovejs.io/",
     "repository": {
@@ -14,11 +18,17 @@
     "bugs": {
         "url": "https://github.com/lovejs/lovejs-framework/issues"
     },
+    "peerDependencies": {
+        "@lovejs/components": "^0.0.1"
+    },
     "dependencies": {
-        "@lovejs/components": "https://github.com/lovejs/lovejs-components",
         "bluebird": "^3.5.1",
         "caporal": "^0.10.0",
+        "dotenv-expand": "^4.2.0",
+        "dotenv-extended": "^2.0.2",
+        "dotenv-parse-variables": "^0.2.0",
         "lodash": "^4.17.4",
+        "minimist": "^1.2.0",
         "node-emoji": "^1.8.1",
         "node-notifier": "^5.1.2",
         "pretty-exceptions": "^1.4.0",

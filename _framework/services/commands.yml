@@ -4,12 +4,12 @@ services:
         public: true
         args:   [ !parameter kernel.version, !services { tag: love.command } ]
 
-    command.debug.container:
-        module: !framework_dir /Commands/DebugContainer
+    command.container:
+        module: !framework_dir /_framework/commands/Container
         args:   [ !service container, !env project_dir ]
         tags:   love.command
 
     command.plugins:
-        module: !framework_dir /Commands/Plugins
+        module: !framework_dir /_framework/commands/Plugins
         tags:   love.command
         args:   [ !service kernel ]

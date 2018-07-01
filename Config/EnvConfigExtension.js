@@ -5,9 +5,9 @@ const {
 } = require("@lovejs/components");
 
 class EnvConfigExtension extends ConfigExtension {
-    constructor(env, pluginDirResolver) {
+    constructor(getEnv, pluginDirResolver) {
         super();
-        this.env = env;
+        this.getEnv = getEnv;
         this.pluginDirResolver = pluginDirResolver;
     }
 
@@ -45,14 +45,7 @@ class EnvConfigExtension extends ConfigExtension {
     }
 
     getTemplateVars() {
-        return { env: this.env };
-    }
-
-    getEnv(envVar) {
-        if (!_.has(this.env, envVar)) {
-            throw new Error(`The variable ${envVar} was not found in environment`);
-        }
-        return _.get(this.env, envVar);
+        return { env: this.getEnv() };
     }
 
     getEnvironmentConfig(configuration) {
