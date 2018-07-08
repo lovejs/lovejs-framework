@@ -27,14 +27,16 @@
         "dotenv-expand": "^4.2.0",
         "dotenv-extended": "^2.0.2",
         "dotenv-parse-variables": "^0.2.0",
-        "lodash": "^4.17.4",
+        "error-stack-parser": "^2.0.2",
+        "lodash": "^4.17.10",
         "minimist": "^1.2.0",
         "node-emoji": "^1.8.1",
-        "node-notifier": "^5.1.2",
+        "node-notifier": "^5.2.1",
         "pretty-exceptions": "^1.4.0",
-        "sane": "^2.2.0",
-        "semver": "^5.4.1",
-        "winston": "^3.0.0-rc1",
-        "winston-transport": "^4.0.0"
+        "sane": "^2.5.2",
+        "semver": "^5.5.0",
+        "stack-trace": "^0.0.10",
+        "winston": "^3.0.0",
+        "winston-transport": "^4.2.0"
     }
 }

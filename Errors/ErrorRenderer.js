@@ -21,7 +21,6 @@ module.exports = error => {
     }
 };
 
-
 const displayDiSchemaError = error => {
     var table = new Table();
 

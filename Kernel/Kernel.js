@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const { promisify } = require("util");
 const fileExists = promisify(fs.exists);
-const winston = require("winston");
+
 const minimist = require("minimist");
 
 /* Dot env related modules */
@@ -23,9 +23,8 @@ const {
     console: { Output },
     validation: { Validation }
 } = require("@lovejs/components");
-winston.format.emojify = require("../Logger/formatters/emojify");
-winston.format.stylify = require("../Logger/formatters/stylify");
-winston.transports["Notifier"] = require("../Logger/transports/NotifyTransport");
+
+const winston = require("../Logger/Winston");
 
 /**
  * Base Kernel class
@@ -173,6 +172,10 @@ class Kernel {
         });
     }
 
+    getLoggers() {
+        return this.loggers;
+    }
+
     /**
      * Get a winston logger configuration object
      * @param {object} definition
@@ -189,16 +192,16 @@ class Kernel {
             for (let type in entry) {
                 const transport = _.find(_.keys(winston.transports), t => t.toLowerCase() == type.toLowerCase());
                 if (!transport) {
-                    console.log(`Unknow winston logger transport "${type}"`);
+                    throw new Error(`Unknow winston logger transport "${type}"`);
                 }
 
                 const module = winston.transports[transport];
                 let config = entry[type];
                 if (config.formats) {
                     config.format = winston.format.combine.apply(this, _.map(config.formats, (c, f) => winston.format[f](c)));
+
                     delete config.formats;
                 }
-
                 configuration.transports.push(new module(config));
             }
         }
@@ -512,7 +515,6 @@ class Kernel {
      */
     async cli(args) {
         this.isCli = true;
-        let cli;
         try {
             await this.boot();
             const cli = await this.container.get("cli");
