@@ -1,7 +1,7 @@
 {
     "name": "@lovejs/framework",
     "author": "Vincent <vincent@fullstack.pro>",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Lovejs framework",
     "main": "src/index.js",
     "keywords": [
